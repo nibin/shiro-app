@@ -1,0 +1,70 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'war'
+apply plugin: 'jetty'
+
+sourceCompatibility = 1.7
+version = '1.0'
+jar {
+    manifest {
+        attributes 'Implementation-Title': 'Shiro App', 'Implementation-Version': version
+    }
+}
+
+repositories {
+    mavenCentral()
+	maven {
+		url "http://msi-vmplaftool:8081/artifactory/ext-release-local/"
+	}
+}
+
+dependencies {
+    compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
+	compile 'org.apache.shiro:shiro-core:1.2.3'
+	compile 'org.apache.shiro:shiro-web:1.2.3'
+	compile 'org.springframework:spring-jdbc:4.1.4.RELEASE'
+	compile 'org.springframework:spring-web:4.1.4.RELEASE'
+	compile 'org.springframework:spring-context:4.1.4.RELEASE'
+	runtime 'mysql:mysql-connector-java:5.1.34'
+	runtime 'oracle:ojdbc6:11.2.0.2.0'
+	runtime 'org.apache.commons:commons-dbcp2:2.0.1'
+	
+	//compile 'org.glassfish.jersey.core:jersey-server:2.15'
+	//compile 'org.glassfish.jersey.core:jersey-client:2.15'
+	//compile 'org.glassfish.jersey.core:jersey-common:2.15'
+
+	compile group: 'org.slf4j', name:'slf4j-api', version:'1.7.6'
+	compile group: 'org.slf4j', name:'slf4j-log4j12', version:'1.7.6'
+	compile group: 'log4j', name: 'log4j', version: '1.2.17'
+	providedCompile group: 'org.jboss.spec.javax.servlet', name: 'jboss-servlet-api_3.0_spec', version: '1.0.0.Final'
+
+
+    testCompile group: 'junit', name: 'junit', version: '4.+'
+}
+
+uploadArchives {
+    repositories {
+       flatDir {
+           dirs 'repos'
+       }
+    }
+}
+
+project.webAppDirName = 'WebContent'
+
+war {
+	from ('WebContent/app') {
+		into ('app')
+	}
+	 
+	webInf { from 'WebContent/WEB-INF/' } // adds a file-set to the WEB-INF dir.
+	
+}
+
+clean {
+	
+	delete 'shiroapp.log'
+}
+
+
+project.httpPort = 7887
